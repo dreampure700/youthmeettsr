@@ -506,7 +506,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  align-items: start;    /* both columns start from top — label height is now equal */
+  align-items: start;
   margin-bottom: 20px;
 }
 
@@ -519,57 +519,55 @@ body {
   flex-direction: column;
 }
 
-/* WhatsApp label row — label + checkbox on same line, phone stays flush */
-.wa-label-row {
+/* Ensure label heights match identically between Column 1 & Column 2 */
+.phone-field-col > .field-label,
+.field-label-with-action {
+  height: 24px;
   display: flex;
   align-items: center;
+  margin-bottom: 8px;
+}
+
+.field-label-with-action {
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 7px;
-  flex-wrap: wrap;
 }
 
-.wa-label-row .field-label {
-  margin-bottom: 0;   /* override default bottom margin — row handles spacing */
+.field-label-with-action .field-label {
+  margin-bottom: 0;
+  line-height: 1;
 }
 
-/* Inline checkbox next to the WhatsApp label */
-.checkbox-inline {
+/* Same as mobile pill badge */
+.same-mobile-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--blue);
-  cursor: pointer;
-  user-select: none;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--blue-dark);
   background: var(--blue-light);
   border: 1px solid var(--blue-mid);
-  padding: 3px 8px;
+  padding: 2px 8px;
   border-radius: var(--radius-full);
-  transition: all var(--transition);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition);
   white-space: nowrap;
-  flex-shrink: 0;
 }
 
-.checkbox-inline:hover { background: var(--blue-mid); }
+.same-mobile-badge:hover { background: var(--blue-mid); }
 
-.checkbox-inline input[type="checkbox"] {
-  width: 13px;
-  height: 13px;
+.same-mobile-badge input[type="checkbox"] {
+  width: 12px;
+  height: 12px;
   accent-color: var(--blue);
   cursor: pointer;
   flex-shrink: 0;
 }
 
-/* Phone field col — make sure .phone-group fills the column */
+/* Phone group fills column width */
 .phone-field-col .phone-group {
-  flex: 1;
-}
-
-/* Mobile label inherits same margin bottom */
-.phone-field-col .field-label {
-  margin-bottom: 7px;
+  width: 100%;
 }
 
 
