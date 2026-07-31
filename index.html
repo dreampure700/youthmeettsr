@@ -308,6 +308,14 @@
           <textarea id="reason_not_coming" name="reason_not_coming" class="field-textarea" rows="3" placeholder="Enter reason here..."></textarea>
         </div>
 
+        <!-- Lunch Requirement -->
+        <div class="field-group" style="margin-top:20px; padding-top:16px; border-top:1px solid #e2e8f0;">
+          <label class="checkbox-row" for="need_lunch">
+            <input type="checkbox" id="need_lunch" name="need_lunch" value="1" />
+            <span class="malayalam-note" style="font-size:14.5px; font-weight:600; color:var(--text-body);">ഉച്ചഭക്ഷണം (Lunch) ആവശ്യമുണ്ടോ?</span>
+          </label>
+        </div>
+
       </div><!-- /card 2 -->
 
       <!-- ══ CARD 3: Program Contribution ══ -->
@@ -444,6 +452,11 @@
               <div class="stat-num" id="stat-children">—</div>
               <div class="stat-lbl">Total Children</div>
             </div>
+            <div class="stat-card s-orange">
+              <div class="stat-icon-sm">🍱</div>
+              <div class="stat-num" id="stat-lunch">—</div>
+              <div class="stat-lbl">Lunch Required</div>
+            </div>
             <div class="stat-card s-gold">
               <div class="stat-icon-sm">🪙</div>
               <div class="stat-num" id="stat-donation">—</div>
@@ -549,12 +562,13 @@
                   <th>Spouse</th>
                   <th>Spouse Mobile</th>
                   <th>Children</th>
+                  <th>Lunch</th>
                   <th>Donation (₹)</th>
                   <th>Registered</th>
                 </tr>
               </thead>
               <tbody id="dir-tbody">
-                <tr><td colspan="14" class="dir-empty">Loading data...</td></tr>
+                <tr><td colspan="15" class="dir-empty">Loading data...</td></tr>
               </tbody>
             </table>
           </div>

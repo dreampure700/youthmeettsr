@@ -358,6 +358,7 @@ function collectFormData() {
 
   const wantDonate = $('want_to_donate')?.checked ? 'Yes' : 'No';
   const donateAmt  = wantDonate === 'Yes' ? (parseFloat($('donation_amount')?.value) || 0) : 0;
+  const needLunch  = $('need_lunch')?.checked ? 'Yes' : 'No';
 
   return {
     timestamp:            new Date().toISOString(),
@@ -376,6 +377,7 @@ function collectFormData() {
     spouse_not_attending: $('spouse_not_attending')?.checked ? 'Yes' : 'No',
     children:             JSON.stringify(children),
     reason_not_coming:    $('reason_not_coming')?.value.trim() || '',
+    need_lunch:           needLunch,
     want_to_donate:       wantDonate,
     donation_amount:      donateAmt,
   };
@@ -439,7 +441,8 @@ function resetForm() {
   $$('.dlevel-btn').forEach(b => b.classList.remove('active'));
   $('desig_level').value = '';
   
-  // Donation reset
+  // Donation & Lunch reset
+  if ($('need_lunch')) $('need_lunch').checked = false;
   if ($('want_to_donate')) $('want_to_donate').checked = false;
   if ($('donation-amount-group')) $('donation-amount-group').classList.add('hidden');
   if ($('donation_amount')) $('donation_amount').value = '';
@@ -522,7 +525,7 @@ function switchTab(tab) {
 // ─── FETCH STATS ────────────────────────────────────
 async function fetchStats() {
   ['stat-total','stat-family','stat-single','stat-attendees','stat-spouses','stat-children',
-   'stat-donation','age-below5','age-5to10','age-11to18'].forEach(id => { if ($(id)) $(id).textContent = '…'; });
+   'stat-lunch','stat-donation','age-below5','age-5to10','age-11to18'].forEach(id => { if ($(id)) $(id).textContent = '…'; });
   $('zone-stats-list').innerHTML = '';
   $('unit-stats-list').innerHTML = '';
   $('desig-stats-list').innerHTML = '';
@@ -544,6 +547,7 @@ function buildDemoStats() {
     total: 64, married: 44, single: 20, totalAttendees: 158,
     spouseCount: 38, childrenCount: 52,
     ageBelow5: 14, age5to10: 24, age11to18: 14,
+    lunchCount: 48,
     totalDonation: 28500,
     zones: { 'Thrissur City':14,'Chavakkad':11,'Kunnamkulam':10,'Guruvayoor':9,'Kodungallur':8,'Pavaratty':7,'Kaipamangalam':5 },
     units: { 'Poothole':7,'Mannalamkunnu':6,'Kallur':5,'Chowallurpadi':5,'Orumanayoor':4,'Eriyad':4,'Vadanappally':4 },
@@ -558,6 +562,7 @@ function renderStats(d) {
   animCount('stat-attendees', d.totalAttendees || 0);
   animCount('stat-spouses',   d.spouseCount || 0);
   animCount('stat-children',  d.childrenCount || 0);
+  animCount('stat-lunch',     d.lunchCount   || 0);
   animCount('age-below5',     d.ageBelow5   || 0);
   animCount('age-5to10',      d.age5to10    || 0);
   animCount('age-11to18',     d.age11to18   || 0);
@@ -613,7 +618,7 @@ function animCountFormatted(id, target, prefix = '₹') {
 
 // ─── DELEGATE DIRECTORY ──────────────────────────────
 async function fetchDirectory() {
-  $('dir-tbody').innerHTML = '<tr><td colspan="14" class="dir-empty">Loading...</td></tr>';
+  $('dir-tbody').innerHTML = '<tr><td colspan="15" class="dir-empty">Loading...</td></tr>';
 
   if (CONFIG.SHEET_URL.includes('YOUR_GOOGLE')) {
     await new Promise(r => setTimeout(r, 500));
@@ -626,7 +631,7 @@ async function fetchDirectory() {
     const json = await res.json();
     allRegistrations = json.rows || [];
     renderDirectory(allRegistrations);
-  } catch { $('dir-tbody').innerHTML = '<tr><td colspan="14" class="dir-empty">Failed to load data.</td></tr>'; }
+  } catch { $('dir-tbody').innerHTML = '<tr><td colspan="15" class="dir-empty">Failed to load data.</td></tr>'; }
 }
 
 function buildDemoRegistrations() {
@@ -644,6 +649,7 @@ function buildDemoRegistrations() {
       { name:`Child ${i}B`, age: (i%10)+5, sex:'Female', not_attending: false },
     ] : [];
     const donationAmt = i % 2 === 0 ? (i + 1) * 250 : 0;
+    const needLunch = i % 3 !== 0 ? 'Yes' : 'No';
 
     return {
       sr: i+1,
@@ -660,6 +666,7 @@ function buildDemoRegistrations() {
       spouse_not_attending: i % 5 === 0 ? 'Yes' : 'No',
       children: JSON.stringify(children),
       reason_not_coming: '',
+      need_lunch: needLunch,
       want_to_donate: donationAmt > 0 ? 'Yes' : 'No',
       donation_amount: donationAmt,
     };
@@ -672,7 +679,7 @@ function renderDirectory(rows) {
   $('dir-count').textContent = `Showing ${rows.length} registration${rows.length !== 1 ? 's' : ''}`;
 
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="14" class="dir-empty">No registrations found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="15" class="dir-empty">No registrations found.</td></tr>';
     return;
   }
 
@@ -691,6 +698,7 @@ function renderDirectory(rows) {
 
     const donAmt = parseFloat(r.donation_amount || 0);
     const donBadge = donAmt > 0 ? `<span class="badge badge-gold">₹${donAmt.toLocaleString('en-IN')}</span>` : '—';
+    const lunchBadge = r.need_lunch === 'Yes' ? `<span class="badge badge-orange">Yes</span>` : `<span class="badge badge-grey">No</span>`;
 
     const ts = r.timestamp ? new Date(r.timestamp).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
 
@@ -708,6 +716,7 @@ function renderDirectory(rows) {
       <td>${r.spouse_name ? `${esc(r.spouse_name)}${r.spouse_not_attending==='Yes'?' ❌':''}` : '—'}</td>
       <td>${esc(r.spouse_mobile||'—')}</td>
       <td style="min-width:160px;">${childPills || '—'}</td>
+      <td>${lunchBadge}</td>
       <td>${donBadge}</td>
       <td style="white-space:nowrap;">${ts}</td>
     `;
@@ -738,7 +747,7 @@ function esc(s) {
 function exportCSV() {
   const headers = ['#','Name','Mobile','WhatsApp','Zone','Unit','Desig. Level','Designation',
                    'Marital Status','Spouse Name','Spouse Mobile','Spouse Not Attending',
-                   'Children Details','Reason Not Coming','Willing To Donate','Donation Amount (₹)','Registered At'];
+                   'Children Details','Reason Not Coming','Lunch Needed','Willing To Donate','Donation Amount (₹)','Registered At'];
   const rows = allRegistrations.map((r, i) => {
     let children = [];
     try { children = JSON.parse(r.children || '[]'); } catch {}
@@ -748,7 +757,7 @@ function exportCSV() {
       r.zone, r.unit, r.designation_level, r.designation, r.marital_status,
       r.spouse_name||'', r.spouse_mobile||'', r.spouse_not_attending||'No',
       childStr, r.reason_not_coming||'',
-      r.want_to_donate||'No', r.donation_amount||0, r.timestamp||''
+      r.need_lunch||'No', r.want_to_donate||'No', r.donation_amount||0, r.timestamp||''
     ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
   });
 

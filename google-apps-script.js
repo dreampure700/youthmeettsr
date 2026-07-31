@@ -1,15 +1,6 @@
 /**
- * SUKOON REGISTRATION — Google Apps Script Backend (v2)
+ * SUKOON REGISTRATION — Google Apps Script Backend (v3)
  * Wisdom Youth Organisation, Thrissur District Committee
- *
- * HOW TO DEPLOY:
- * 1. Open https://script.google.com and create a new project
- * 2. Paste all of this code
- * 3. Update SPREADSHEET_ID with your Google Sheet's ID
- * 4. Click Deploy → New deployment → Web app
- *    - Execute as: Me
- *    - Who has access: Anyone
- * 5. Copy the Web App URL into app.js → CONFIG.SHEET_URL
  */
 
 const SPREADSHEET_ID = '19RhyFN5f43Z2cDlWRf0--93EecH2-L349Qm1gGfY_0A';
@@ -25,6 +16,7 @@ const HEADERS = [
   'Spouse Name', 'Spouse Mobile', 'Spouse Not Attending',
   'Children (JSON)',
   'Reason Not Coming',
+  'Lunch Needed',
   'Willing To Donate',
   'Donation Amount (₹)'
 ];
@@ -66,6 +58,7 @@ function doPost(e) {
       p.spouse_not_attending || 'No',
       p.children    || '[]',
       p.reason_not_coming || '',
+      p.need_lunch  || 'No',
       p.want_to_donate || 'No',
       Number(p.donation_amount || 0),
     ];
@@ -116,8 +109,9 @@ function doGet(e) {
         spouse_not_attending: String(r[13]),
         children:             String(r[14]),
         reason_not_coming:    String(r[15]),
-        want_to_donate:       String(r[16] || 'No'),
-        donation_amount:      Number(r[17] || 0),
+        need_lunch:           String(r[16] || 'No'),
+        want_to_donate:       String(r[17] || 'No'),
+        donation_amount:      Number(r[18] || 0),
       }));
       return jsonResponse({ rows });
     }
@@ -126,7 +120,7 @@ function doGet(e) {
     const total   = data.length;
     let married = 0, single = 0, spouseCount = 0;
     let childrenCount = 0, ageBelow5 = 0, age5to10 = 0, age11to18 = 0;
-    let totalDonation = 0;
+    let lunchCount = 0, totalDonation = 0;
     const zones = {}, units = {}, designations = {};
     let totalAttendees = 0;
 
@@ -136,9 +130,12 @@ function doGet(e) {
       const unit     = String(r[7]);
       const desig    = String(r[9]);
       const spouseNA  = String(r[13]);
-      const donAmt   = parseFloat(r[17] || 0);
+      const lunch    = String(r[16] || 'No');
+      const donAmt   = parseFloat(r[18] || 0);
 
       if (marital === 'Married') { married++; } else { single++; }
+
+      if (lunch === 'Yes') { lunchCount++; }
 
       // Total Donation sum
       if (!isNaN(donAmt) && donAmt > 0) {
@@ -187,7 +184,7 @@ function doGet(e) {
       total, married, single, totalAttendees,
       spouseCount, childrenCount,
       ageBelow5, age5to10, age11to18,
-      totalDonation,
+      lunchCount, totalDonation,
       zones, units, designations,
     });
   } catch (err) {
@@ -198,7 +195,7 @@ function doGet(e) {
 function emptyStats() {
   return { total:0, married:0, single:0, totalAttendees:0,
            spouseCount:0, childrenCount:0, ageBelow5:0, age5to10:0, age11to18:0,
-           totalDonation:0,
+           lunchCount:0, totalDonation:0,
            zones:{}, units:{}, designations:{} };
 }
 
