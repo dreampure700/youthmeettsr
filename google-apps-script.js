@@ -12,7 +12,7 @@
  * 5. Copy the Web App URL into app.js → CONFIG.SHEET_URL
  */
 
-const SPREADSHEET_ID = 'YOUR_GOOGLE_SHEET_ID_HERE';
+const SPREADSHEET_ID = '19RhyFN5f43Z2cDlWRf0--93EecH2-L349Qm1gGfY_0A';
 
 // Column headers for the Registrations sheet
 const HEADERS = [
