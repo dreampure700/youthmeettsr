@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Sukoon – Youth Leader's Family Meet | Wisdom Youth Thrissur</title>
+  <meta name="description" content="Register for Sukoon – Youth Leader's Family Meet conducted by Wisdom Youth Organisation, Thrissur District Committee." />
+  <meta name="theme-color" content="#0077b6" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Sukoon" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+Malayalam:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── HEADER ─── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <img src="icons/wisdom-youth-logo.png" alt="Wisdom Youth Organisation" class="header-logo" />
+      <div class="header-text">
+        <div class="header-org">Wisdom Youth Organisation</div>
+        <div class="header-district">Thrissur District Committee</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── HERO BANNER ─── -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <div class="sukoon-brand">
+        <div class="sukoon-wordmark">
+          <span class="sw-s">S</span><span class="sw-u">U</span><span class="sw-k">K</span><span class="sw-oo">OO</span><span class="sw-n">N</span>
+        </div>
+        <div class="sukoon-tagline">YOUTH LEADER'S FAMILY MEET</div>
+      </div>
+      
+      <div class="event-info-strip">
+        <div class="event-info-item">
+          <span class="info-icon">📅</span>
+          <span>August 23, Sunday</span>
+        </div>
+        <div class="event-info-divider">|</div>
+        <div class="event-info-item">
+          <span class="info-icon">📍</span>
+          <span>Salsabeel Arabic College, Venkidang</span>
+        </div>
+      </div>
+
+      <p class="hero-desc">Register your participation for the Sukoon Youth Leader's Family Meet organised by Wisdom Youth Organisation, Thrissur District Committee.</p>
+      <a href="#registration-form" class="hero-cta">Register Now <span class="cta-arrow">↓</span></a>
+    </div>
+  </section>
+
+  <!-- ─── MAIN CONTENT ─── -->
+  <main class="main-wrap" id="registration-form">
+
+    <div id="offline-notice" class="notice notice-warning hidden">
+      <span class="notice-icon">📶</span>
+      <span>You're offline. Your registration will be submitted when back online.</span>
+    </div>
+
+    <!-- Success State -->
+    <div id="success-state" class="success-screen hidden">
+      <div class="success-icon-wrap">
+        <svg class="checkmark" viewBox="0 0 52 52">
+          <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+          <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+      </div>
+      <h2 class="success-title">Registration Successful!</h2>
+      <p class="success-body">JazakAllah Khair! Your registration for Sukoon has been received. We look forward to seeing you and your family at the workshop.</p>
+      <button class="btn btn-primary" onclick="resetForm()">Register Another Person</button>
+    </div>
+
+    <!-- ─── REGISTRATION FORM ─── -->
+    <form id="sukoon-form" novalidate>
+
+      <!-- ══ CARD 1: Personal Details ══ -->
+      <div class="form-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#e0f2fe;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0077b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="26" height="26"><rect x="3" y="4" width="18" height="16" rx="3"/><line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="13" y2="13"/></svg>
+          </div>
+          <div>
+            <h2 class="card-title">Personal Details</h2>
+            <p class="card-subtitle">Fill in your personal information</p>
+          </div>
+        </div>
+
+        <!-- Full Name -->
+        <div class="field-group">
+          <label for="name" class="field-label">Full Name <span class="required-star">*</span></label>
+          <input type="text" id="name" name="name" class="field-input" placeholder="Enter your full name" autocomplete="name" />
+          <span class="field-error" id="err-name"></span>
+        </div>
+
+        <!-- Mobile & WhatsApp -->
+        <div class="phone-fields-row">
+          <div class="phone-field-col">
+            <label for="mobile" class="field-label">Mobile Number <span class="required-star">*</span></label>
+            <div class="phone-group">
+              <select id="mobile_code" name="mobile_country_code" class="country-select">
+                <option value="+91">🇮🇳 +91</option>
+                <option value="+971">🇦🇪 +971</option>
+                <option value="+966">🇸🇦 +966</option>
+                <option value="+974">🇶🇦 +974</option>
+                <option value="+968">🇴🇲 +968</option>
+                <option value="+965">🇰🇼 +965</option>
+                <option value="+973">🇧🇭 +973</option>
+              </select>
+              <input type="tel" id="mobile" name="mobile" class="field-input phone-field" placeholder="Mobile number" />
+            </div>
+            <span class="field-error" id="err-mobile"></span>
+          </div>
+          <div class="phone-field-col">
+            <div class="wa-label-row">
+              <label for="whatsapp" class="field-label">WhatsApp Number <span class="required-star">*</span></label>
+              <label class="checkbox-inline" for="same_as_mobile">
+                <input type="checkbox" id="same_as_mobile" />
+                <span>Same as mobile</span>
+              </label>
+            </div>
+            <div class="phone-group">
+              <select id="whatsapp_code" name="whatsapp_country_code" class="country-select">
+                <option value="+91">🇮🇳 +91</option>
+                <option value="+971">🇦🇪 +971</option>
+                <option value="+966">🇸🇦 +966</option>
+                <option value="+974">🇶🇦 +974</option>
+                <option value="+968">🇴🇲 +968</option>
+                <option value="+965">🇰🇼 +965</option>
+                <option value="+973">🇧🇭 +973</option>
+              </select>
+              <input type="tel" id="whatsapp" name="whatsapp" class="field-input phone-field" placeholder="WhatsApp number" />
+            </div>
+            <span class="field-error" id="err-whatsapp"></span>
+          </div>
+        </div>
+
+        <!-- Zone -->
+        <div class="field-group">
+          <label for="zone" class="field-label">Zone <span class="required-star">*</span></label>
+          <select id="zone" name="zone" class="field-select">
+            <option value="">— Select your Zone —</option>
+            <option value="Chavakkad">Chavakkad Zone</option>
+            <option value="Pavaratty">Pavaratty Zone</option>
+            <option value="Kunnamkulam">Kunnamkulam Zone</option>
+            <option value="Guruvayoor">Guruvayoor Zone</option>
+            <option value="Thrissur City">Thrissur City Zone</option>
+            <option value="Kodungallur">Kodungallur Zone</option>
+            <option value="Kaipamangalam">Kaipamangalam Zone</option>
+          </select>
+          <span class="field-error" id="err-zone"></span>
+        </div>
+
+        <!-- Unit (dynamic) -->
+        <div class="field-group" id="unit-group" style="display:none;">
+          <label for="unit" class="field-label">Unit <span class="required-star">*</span></label>
+          <select id="unit" name="unit" class="field-select">
+            <option value="">— Select your Unit —</option>
+          </select>
+          <span class="field-error" id="err-unit"></span>
+        </div>
+
+        <!-- Designation Level -->
+        <div class="field-group">
+          <label for="desig_level" class="field-label">Designation Level <span class="required-star">*</span></label>
+          <div class="desig-level-tabs" id="desig-level-tabs">
+            <button type="button" class="dlevel-btn" data-level="District">🏛️ District</button>
+            <button type="button" class="dlevel-btn" data-level="Zone">🗺️ Zone</button>
+            <button type="button" class="dlevel-btn" data-level="Unit">🏢 Unit</button>
+          </div>
+          <input type="hidden" id="desig_level" name="designation_level" />
+          <span class="field-error" id="err-desig-level"></span>
+        </div>
+
+        <!-- Designation Role -->
+        <div class="field-group">
+          <label for="designation" class="field-label">Designation <span class="required-star">*</span></label>
+          <select id="designation" name="designation" class="field-select">
+            <option value="">— Select Designation —</option>
+            <option value="President">President</option>
+            <option value="Vice President">Vice President</option>
+            <option value="Secretary">Secretary</option>
+            <option value="Joint Secretary">Joint Secretary</option>
+            <option value="Treasurer">Treasurer</option>
+            <option value="Member">Member</option>
+          </select>
+          <span class="field-error" id="err-designation"></span>
+        </div>
+
+      </div><!-- /card 1 -->
+
+      <!-- ══ CARD 2: Family Details ══ -->
+      <div class="form-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#fce7f3;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="26" height="26"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <div>
+            <h2 class="card-title">Family Details</h2>
+            <p class="card-subtitle">Tell us about your family members attending</p>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Marital Status <span class="required-star">*</span></label>
+          <div class="radio-pill-group">
+            <label class="radio-pill" id="pill-married">
+              <input type="radio" name="marital_status" value="Married" id="ms-married" />
+              <span class="pill-icon">
+                <!-- Two rings icon -->
+                <svg viewBox="0 0 36 20" width="36" height="20">
+                  <circle cx="10" cy="10" r="8" fill="none" stroke="#0077b6" stroke-width="2.5"/>
+                  <circle cx="26" cy="10" r="8" fill="none" stroke="#be185d" stroke-width="2.5"/>
+                </svg>
+              </span>
+              <span class="pill-text">Married</span>
+            </label>
+            <label class="radio-pill" id="pill-single">
+              <input type="radio" name="marital_status" value="Single" id="ms-single" />
+              <span class="pill-icon">
+                <!-- Single star icon -->
+                <svg viewBox="0 0 24 24" width="22" height="22">
+                  <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="none" stroke="#0077b6" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="pill-text">Single</span>
+            </label>
+          </div>
+          <span class="field-error" id="err-marital"></span>
+        </div>
+
+        <div id="family-note" class="info-notice hidden">
+          <span class="notice-icon">ℹ️</span>
+          <p class="malayalam-note">കുടുംബ വിവരങ്ങൾ പൂർണ്ണമായും ചേർക്കുക. പങ്കെടുക്കാൻ സാധിക്കാത്തവരുടെ പേരിന് നേരെ <strong>❌</strong> ടിക്ക് ചെയ്യുക.</p>
+        </div>
+
+        <!-- Spouse Section -->
+        <div id="spouse-section" class="sub-section hidden">
+          <div class="sub-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#be185d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            Spouse Details
+          </div>
+          <div class="field-row-2">
+            <div class="field-group">
+              <label for="spouse_name" class="field-label">Spouse Name</label>
+              <input type="text" id="spouse_name" name="spouse_name" class="field-input" placeholder="Spouse's full name" />
+            </div>
+            <div class="field-group">
+              <label for="spouse_mobile" class="field-label">Spouse Mobile</label>
+              <input type="tel" id="spouse_mobile" name="spouse_mobile" class="field-input" placeholder="Spouse's mobile number" />
+            </div>
+          </div>
+          <label class="not-attending-label" for="spouse_not_attending">
+            <input type="checkbox" id="spouse_not_attending" name="spouse_not_attending" value="1" />
+            <div class="na-inner">
+              <span class="na-x">❌</span>
+              <span class="na-text">പങ്കെടുക്കില്ല &nbsp;–&nbsp; Spouse not attending</span>
+            </div>
+          </label>
+        </div>
+
+        <!-- Children Section -->
+        <div id="children-section" class="sub-section hidden">
+          <div class="sub-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#0077b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill="#0077b6" stroke="none"/></svg>
+            Children Details
+          </div>
+          <div id="children-container"></div>
+          <button type="button" id="add-child-btn" class="btn btn-add-child">+ Add Child</button>
+        </div>
+
+        <!-- Reason -->
+        <div id="reason-section" class="field-group hidden">
+          <label for="reason_not_coming" class="field-label malayalam-label">
+            ഭാര്യക്കോ മക്കൾക്കോ പങ്കെടുക്കാതിരിക്കാൻ ശറഇയ്യായ കാരണമുണ്ടെങ്കിൽ ഇവിടെ എഴുതുക:
+          </label>
+          <textarea id="reason_not_coming" name="reason_not_coming" class="field-textarea" rows="3" placeholder="Enter reason here..."></textarea>
+        </div>
+
+      </div><!-- /card 2 -->
+
+      <!-- ══ SUBMIT ══ -->
+      <div class="submit-wrap">
+        <button type="submit" id="submit-btn" class="btn btn-submit">
+          <span id="submit-text">Submit Registration</span>
+          <div id="submit-spinner" class="spinner hidden"></div>
+        </button>
+        <p class="submit-note">Your information is secure and will only be used for event coordination.</p>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <img src="icons/wisdom-youth-logo.png" alt="Wisdom Youth" class="footer-logo" />
+    <p>Wisdom Youth Organisation &mdash; Thrissur District Committee</p>
+    <p class="footer-copy">&copy; 2026 Sukoon Registration. All rights reserved.</p>
+  </footer>
+
+  <!-- ─── ADMIN FAB ─── -->
+  <button class="admin-fab" id="admin-fab-btn" title="Admin Panel">🔐</button>
+
+  <!-- ════════════════════════════════════════
+       ADMIN MODAL — Full Screen
+  ═════════════════════════════════════════ -->
+  <div id="admin-modal" class="modal-backdrop hidden">
+    <div class="admin-panel-box">
+      <button class="modal-close-btn" id="modal-close-btn">✕</button>
+
+      <!-- ── LOGIN ── -->
+      <div id="admin-login-panel">
+        <div class="modal-head">
+          <div class="modal-icon-big">🔐</div>
+          <h3>Admin Access</h3>
+          <p>Enter password to view registration data</p>
+        </div>
+        <div class="field-group">
+          <label for="admin-password" class="field-label">Password</label>
+          <input type="password" id="admin-password" class="field-input" placeholder="Enter admin password" />
+          <span class="field-error" id="err-admin-pass"></span>
+        </div>
+        <button class="btn btn-primary" id="admin-login-btn" style="width:100%;">Access Dashboard</button>
+      </div>
+
+      <!-- ── DASHBOARD ── -->
+      <div id="admin-dashboard" class="hidden">
+
+        <!-- Tab Bar -->
+        <div class="admin-tabs">
+          <button class="atab active" data-tab="dashboard">📊 Dashboard</button>
+          <button class="atab" data-tab="directory">📋 Delegate Directory</button>
+        </div>
+
+        <!-- ─ TAB: DASHBOARD ─ -->
+        <div id="tab-dashboard" class="tab-panel">
+          <div class="dash-topbar">
+            <h3 class="dash-title">Registration Dashboard</h3>
+            <div class="dash-topbar-actions">
+              <button class="btn btn-outline btn-sm" id="refresh-stats-btn">🔄 Refresh</button>
+              <button class="btn btn-danger btn-sm" id="admin-logout-btn">Logout</button>
+            </div>
+          </div>
+
+          <!-- Overview Stats -->
+          <div class="stats-grid">
+            <div class="stat-card s-blue">
+              <div class="stat-icon-sm">📋</div>
+              <div class="stat-num" id="stat-total">—</div>
+              <div class="stat-lbl">Total Registrations</div>
+            </div>
+            <div class="stat-card s-green">
+              <div class="stat-icon-sm">
+                <!-- Home icon for family -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <div class="stat-num" id="stat-family">—</div>
+              <div class="stat-lbl">With Family</div>
+            </div>
+            <div class="stat-card s-orange">
+              <div class="stat-icon-sm">
+                <!-- Single star -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2" stroke-linejoin="round" width="22" height="22"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+              </div>
+              <div class="stat-num" id="stat-single">—</div>
+              <div class="stat-lbl">Single</div>
+            </div>
+            <div class="stat-card s-purple">
+              <div class="stat-icon-sm">📊</div>
+              <div class="stat-num" id="stat-attendees">—</div>
+              <div class="stat-lbl">Total Attendees</div>
+            </div>
+            <div class="stat-card s-pink">
+              <div class="stat-icon-sm">
+                <!-- Heart / spouse -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="#db2777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+              </div>
+              <div class="stat-num" id="stat-spouses">—</div>
+              <div class="stat-lbl">Spouses (Female)</div>
+            </div>
+            <div class="stat-card s-teal">
+              <div class="stat-icon-sm">🌱</div>
+              <div class="stat-num" id="stat-children">—</div>
+              <div class="stat-lbl">Total Children</div>
+            </div>
+          </div>
+
+          <!-- Children Age Groups -->
+          <div class="section-block">
+            <h4 class="block-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#0077b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="vertical-align:middle;margin-right:6px;"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg>
+              Children by Age Group
+            </h4>
+            <div class="age-grid">
+              <div class="age-card">
+                <div class="age-emoji">🍼</div>
+                <div class="age-num" id="age-below5">—</div>
+                <div class="age-lbl">Below 5 years</div>
+              </div>
+              <div class="age-card">
+                <div class="age-emoji">📚</div>
+                <div class="age-num" id="age-5to10">—</div>
+                <div class="age-lbl">5 – 10 years</div>
+              </div>
+              <div class="age-card">
+                <div class="age-emoji">🎓</div>
+                <div class="age-num" id="age-11to18">—</div>
+                <div class="age-lbl">11 – 18 years</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Zone Breakdown -->
+          <div class="section-block">
+            <h4 class="block-title">🗺️ Zone-wise Registrations</h4>
+            <div id="zone-stats-list"></div>
+          </div>
+
+          <!-- Unit Breakdown -->
+          <div class="section-block">
+            <h4 class="block-title">🏢 Unit-wise Registrations</h4>
+            <div id="unit-stats-list"></div>
+          </div>
+
+          <!-- Designation Breakdown -->
+          <div class="section-block">
+            <h4 class="block-title">🏅 Designation Breakdown</h4>
+            <div id="desig-stats-list"></div>
+          </div>
+
+          <p class="last-updated" id="last-updated"></p>
+        </div>
+
+        <!-- ─ TAB: DELEGATE DIRECTORY ─ -->
+        <div id="tab-directory" class="tab-panel hidden">
+          <div class="dash-topbar">
+            <h3 class="dash-title">Delegate Directory</h3>
+            <div class="dash-topbar-actions">
+              <button class="btn btn-outline btn-sm" id="export-csv-btn">⬇️ Export CSV</button>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="dir-filters">
+            <input type="text" id="dir-search" class="field-input" placeholder="🔍 Search by name, mobile, zone..." />
+            <select id="dir-filter-zone" class="field-select">
+              <option value="">All Zones</option>
+              <option value="Chavakkad">Chavakkad</option>
+              <option value="Pavaratty">Pavaratty</option>
+              <option value="Kunnamkulam">Kunnamkulam</option>
+              <option value="Guruvayoor">Guruvayoor</option>
+              <option value="Thrissur City">Thrissur City</option>
+              <option value="Kodungallur">Kodungallur</option>
+              <option value="Kaipamangalam">Kaipamangalam</option>
+            </select>
+            <select id="dir-filter-desig" class="field-select">
+              <option value="">All Designations</option>
+              <option value="President">President</option>
+              <option value="Vice President">Vice President</option>
+              <option value="Secretary">Secretary</option>
+              <option value="Joint Secretary">Joint Secretary</option>
+              <option value="Treasurer">Treasurer</option>
+              <option value="Member">Member</option>
+            </select>
+          </div>
+
+          <div class="dir-count" id="dir-count">Loading...</div>
+
+          <!-- Table (scrollable) -->
+          <div class="dir-table-wrap">
+            <table class="dir-table" id="dir-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Mobile</th>
+                  <th>WhatsApp</th>
+                  <th>Zone</th>
+                  <th>Unit</th>
+                  <th>Desig. Level</th>
+                  <th>Designation</th>
+                  <th>Status</th>
+                  <th>Spouse</th>
+                  <th>Spouse Mobile</th>
+                  <th>Children</th>
+                  <th>Registered</th>
+                </tr>
+              </thead>
+              <tbody id="dir-tbody">
+                <tr><td colspan="13" class="dir-empty">Loading data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div><!-- /tab-directory -->
+
+      </div><!-- /admin-dashboard -->
+    </div><!-- /admin-panel-box -->
+  </div><!-- /admin-modal -->
+
+  <!-- ─── PWA INSTALL BANNER ─── -->
+  <div id="install-banner" class="install-banner hidden">
+    <div class="install-left">
+      <img src="icons/icon-72.png" alt="App Icon" class="install-app-icon" />
+      <div class="install-info">
+        <strong>Install Sukoon App</strong>
+        <span>Add to home screen for quick access</span>
+      </div>
+    </div>
+    <div class="install-right">
+      <button id="install-btn" class="btn btn-primary btn-sm">Install</button>
+      <button id="dismiss-btn" class="btn-icon-close">✕</button>
+    </div>
+  </div>
+
+  <!-- ─── TOAST ─── -->
+  <div id="toast" class="toast hidden">
+    <span id="toast-icon"></span>
+    <span id="toast-msg"></span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
