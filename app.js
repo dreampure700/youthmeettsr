@@ -10,7 +10,7 @@
 
 // ─── CONFIG ───────────────────────────────────────────
 const CONFIG = {
-  SHEET_URL:      'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE',
+  SHEET_URL:      'https://script.google.com/macros/s/AKfycbx9MRxu9di0pifs1rNIBniMT3N22CmqDI_AobN8zxI0Jocy8bbwyo14AoPVJ-QJjw9XJQ/exec',
   ADMIN_PASSWORD: 'sukoon2025',
 };
 
