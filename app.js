@@ -540,8 +540,15 @@ async function fetchStats() {
   try {
     const res  = await fetch(`${CONFIG.SHEET_URL}?action=stats`);
     const json = await res.json();
-    renderStats(json);
-  } catch { showToast('❌','Failed to load stats','error'); }
+    if (json && !json.error) {
+      renderStats(json);
+    } else {
+      renderStats(emptyStats());
+    }
+  } catch (err) {
+    console.warn('Stats fetch notice:', err);
+    renderStats(emptyStats());
+  }
 }
 
 function buildDemoStats() {
@@ -647,6 +654,15 @@ function renderBarList(containerId, obj, suffix) {
   });
 
   setTimeout(() => el.querySelectorAll('.zone-bar-fill').forEach(b => b.style.width = b.dataset.pct + '%'), 80);
+}
+
+function emptyStats() {
+  return {
+    total: 0, married: 0, single: 0, totalAttendees: 0,
+    spouseCount: 0, childrenCount: 0, ageBelow5: 0, age5to10: 0, age11to18: 0,
+    lunchCount: 0, totalDonation: 0,
+    zones: {}, units: {}, designations: {}
+  };
 }
 
 function animCount(id, target) {
