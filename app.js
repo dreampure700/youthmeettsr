@@ -551,8 +551,24 @@ function buildDemoStats() {
     ageBelow5: 14, age5to10: 24, age11to18: 14,
     lunchCount: 48,
     totalDonation: 28500,
-    zones: { 'Thrissur City':14,'Chavakkad':11,'Kunnamkulam':10,'Guruvayoor':9,'Kodungallur':8,'Pavaratty':7,'Kaipamangalam':5 },
-    units: { 'Poothole':7,'Mannalamkunnu':6,'Kallur':5,'Chowallurpadi':5,'Orumanayoor':4,'Eriyad':4,'Vadanappally':4 },
+    zones: {
+      'Thrissur City': { youth: 14, spouses: 10, children: 18, total: 42 },
+      'Chavakkad':     { youth: 11, spouses: 8,  children: 12, total: 31 },
+      'Kunnamkulam':   { youth: 10, spouses: 6,  children: 8,  total: 24 },
+      'Guruvayoor':    { youth: 9,  spouses: 5,  children: 6,  total: 20 },
+      'Kodungallur':   { youth: 8,  spouses: 4,  children: 4,  total: 16 },
+      'Pavaratty':     { youth: 7,  spouses: 3,  children: 3,  total: 13 },
+      'Kaipamangalam': { youth: 5,  spouses: 2,  children: 1,  total: 8  }
+    },
+    units: {
+      'Poothole':      { youth: 7, spouses: 5, children: 9, total: 21 },
+      'Mannalamkunnu': { youth: 6, spouses: 4, children: 6, total: 16 },
+      'Kallur':        { youth: 5, spouses: 3, children: 5, total: 13 },
+      'Chowallurpadi': { youth: 5, spouses: 3, children: 4, total: 12 },
+      'Orumanayoor':   { youth: 4, spouses: 2, children: 2, total: 8  },
+      'Eriyad':        { youth: 4, spouses: 2, children: 2, total: 8  },
+      'Vadanappally':  { youth: 4, spouses: 2, children: 1, total: 7  }
+    },
     designations: { 'Member':28,'Secretary':12,'President':8,'Vice President':7,'Treasurer':5,'Joint Secretary':4 },
   };
 }
@@ -582,24 +598,55 @@ function renderStats(d) {
 }
 
 function renderBarList(containerId, obj, suffix) {
-  const el  = $(containerId);
+  const el = $(containerId);
   el.innerHTML = '';
-  if (!Object.keys(obj).length) { el.innerHTML = '<div style="padding:8px;color:#64748b;font-size:13px;">No data yet</div>'; return; }
-  const max = Math.max(...Object.values(obj), 1);
-  Object.entries(obj).sort(([,a],[,b]) => b-a).forEach(([name, count]) => {
-    const pct = Math.round((count/max)*100);
+  if (!Object.keys(obj).length) {
+    el.innerHTML = '<div style="padding:8px;color:#64748b;font-size:13px;">No data yet</div>';
+    return;
+  }
+
+  const counts = Object.values(obj).map(v => (typeof v === 'object' ? (v.total || v.youth || 0) : v));
+  const max = Math.max(...counts, 1);
+
+  Object.entries(obj).sort(([, a], [, b]) => {
+    const valA = typeof a === 'object' ? (a.total || a.youth || 0) : a;
+    const valB = typeof b === 'object' ? (b.total || b.youth || 0) : b;
+    return valB - valA;
+  }).forEach(([name, val]) => {
+    const isObj = typeof val === 'object';
+    const totalNum = isObj ? (val.total || 0) : val;
+    const pct = Math.round((totalNum / max) * 100);
+
     const row = document.createElement('div');
-    row.className = 'zone-row';
-    row.innerHTML = `
-      <div class="zone-row-top">
-        <span class="zone-name">${name}${suffix ? ' '+suffix : ''}</span>
-        <span class="zone-count">${count}</span>
-      </div>
-      <div class="zone-bar-bg"><div class="zone-bar-fill" style="width:0%" data-pct="${pct}"></div></div>
-    `;
+    row.className = isObj ? 'zbd-card' : 'zone-row';
+
+    if (isObj) {
+      row.innerHTML = `
+        <div class="zbd-top">
+          <div class="zbd-title">${esc(name)}${suffix ? ' ' + suffix : ''}</div>
+          <div class="zbd-total-badge">Total: ${totalNum}</div>
+        </div>
+        <div class="zbd-pills">
+          <span class="zbd-pill zbd-youth">👤 Youth: <strong>${val.youth || 0}</strong></span>
+          <span class="zbd-pill zbd-spouse">👩 Spouses: <strong>${val.spouses || 0}</strong></span>
+          <span class="zbd-pill zbd-child">👶 Children: <strong>${val.children || 0}</strong></span>
+        </div>
+        <div class="zone-bar-bg"><div class="zone-bar-fill" style="width:0%" data-pct="${pct}"></div></div>
+      `;
+    } else {
+      row.innerHTML = `
+        <div class="zone-row-top">
+          <span class="zone-name">${esc(name)}${suffix ? ' ' + suffix : ''}</span>
+          <span class="zone-count">${val}</span>
+        </div>
+        <div class="zone-bar-bg"><div class="zone-bar-fill" style="width:0%" data-pct="${pct}"></div></div>
+      `;
+    }
+
     el.appendChild(row);
   });
-  setTimeout(() => el.querySelectorAll('.zone-bar-fill').forEach(b => b.style.width = b.dataset.pct+'%'), 80);
+
+  setTimeout(() => el.querySelectorAll('.zone-bar-fill').forEach(b => b.style.width = b.dataset.pct + '%'), 80);
 }
 
 function animCount(id, target) {

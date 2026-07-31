@@ -1,5 +1,5 @@
 /**
- * SUKOON REGISTRATION — Google Apps Script Backend (v3)
+ * SUKOON REGISTRATION — Google Apps Script Backend (v4)
  * Wisdom Youth Organisation, Thrissur District Committee
  */
 
@@ -116,7 +116,7 @@ function doGet(e) {
       return jsonResponse({ rows });
     }
 
-    // Build stats
+    // Build detailed stats
     const total   = data.length;
     let married = 0, single = 0, spouseCount = 0;
     let childrenCount = 0, ageBelow5 = 0, age5to10 = 0, age11to18 = 0;
@@ -129,45 +129,29 @@ function doGet(e) {
       const zone     = String(r[6]);
       const unit     = String(r[7]);
       const desig    = String(r[9]);
-      const spouseNA  = String(r[13]);
+      const spouseNA = String(r[13]);
       const lunch    = String(r[16] || 'No');
       const donAmt   = parseFloat(r[18] || 0);
 
       if (marital === 'Married') { married++; } else { single++; }
-
       if (lunch === 'Yes') { lunchCount++; }
+      if (!isNaN(donAmt) && donAmt > 0) { totalDonation += donAmt; }
 
-      // Total Donation sum
-      if (!isNaN(donAmt) && donAmt > 0) {
-        totalDonation += donAmt;
-      }
-
-      // Zone count
-      zones[zone] = (zones[zone] || 0) + 1;
-
-      // Unit count
-      if (unit) units[unit] = (units[unit] || 0) + 1;
-
-      // Designation count
-      if (desig) designations[desig] = (designations[desig] || 0) + 1;
-
-      // Attendees: self = 1
-      let personAttendees = 1;
-
-      // Spouse attending?
+      // Spouse count for this row
+      let personSpouse = 0;
       if (marital === 'Married' && spouseNA !== 'Yes') {
         spouseCount++;
-        personAttendees++;
+        personSpouse = 1;
       }
 
-      // Children
+      // Children count for this row
+      let personChildren = 0;
       try {
         const children = JSON.parse(String(r[14]) || '[]');
         children.forEach(c => {
           if (!c.not_attending) {
+            personChildren++;
             const age = parseInt(c.age, 10);
-            childrenCount++;
-            personAttendees++;
             if (!isNaN(age)) {
               if (age < 5)        ageBelow5++;
               else if (age <= 10) age5to10++;
@@ -177,7 +161,33 @@ function doGet(e) {
         });
       } catch {}
 
-      totalAttendees += personAttendees;
+      const personTotal = 1 + personSpouse + personChildren;
+      totalAttendees += personTotal;
+
+      // Zone Breakdown Object (Youth, Spouses, Children, Total)
+      if (zone) {
+        if (!zones[zone]) {
+          zones[zone] = { youth: 0, spouses: 0, children: 0, total: 0 };
+        }
+        zones[zone].youth += 1;
+        zones[zone].spouses += personSpouse;
+        zones[zone].children += personChildren;
+        zones[zone].total += personTotal;
+      }
+
+      // Unit Breakdown Object (Youth, Spouses, Children, Total)
+      if (unit) {
+        if (!units[unit]) {
+          units[unit] = { youth: 0, spouses: 0, children: 0, total: 0 };
+        }
+        units[unit].youth += 1;
+        units[unit].spouses += personSpouse;
+        units[unit].children += personChildren;
+        units[unit].total += personTotal;
+      }
+
+      // Designation count
+      if (desig) designations[desig] = (designations[desig] || 0) + 1;
     });
 
     return jsonResponse({
