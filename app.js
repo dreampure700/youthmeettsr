@@ -677,11 +677,15 @@ function buildDemoRegistrations() {
 
 function renderDirectory(rows) {
   const tbody = $('dir-tbody');
+  const cardsWrap = $('dir-cards-wrap');
   tbody.innerHTML = '';
+  if (cardsWrap) cardsWrap.innerHTML = '';
+
   $('dir-count').textContent = `Showing ${rows.length} registration${rows.length !== 1 ? 's' : ''}`;
 
   if (!rows.length) {
     tbody.innerHTML = '<tr><td colspan="15" class="dir-empty">No registrations found.</td></tr>';
+    if (cardsWrap) cardsWrap.innerHTML = '<div class="dir-empty">No registrations found.</div>';
     return;
   }
 
@@ -704,25 +708,93 @@ function renderDirectory(rows) {
 
     const ts = r.timestamp ? new Date(r.timestamp).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
 
+    // Clean Phone Numbers for tel: and wa.me/ links
+    const mobDigits = String(r.mobile||'').replace(/\D/g,'');
+    const mobCodeDigits = String(r.mobile_code||'+91').replace(/\D/g,'') || '91';
+    const fullMobNum = mobDigits ? (mobCodeDigits + mobDigits) : '';
+
+    const waDigits = String(r.whatsapp||r.mobile||'').replace(/\D/g,'');
+    const waCodeDigits = String(r.whatsapp_code||r.mobile_code||'+91').replace(/\D/g,'') || '91';
+    const fullWaNum = waDigits ? (waCodeDigits + waDigits) : fullMobNum;
+
+    // Desktop Table Row
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="dir-row-num">${i+1}</td>
       <td><strong>${esc(r.name)}</strong></td>
-      <td>${esc(r.mobile_code||'')} ${esc(r.mobile)}</td>
-      <td>${esc(r.whatsapp_code||'')} ${esc(r.whatsapp||r.mobile)}</td>
+      <td>
+        <div>${esc(r.mobile_code||'')} ${esc(r.mobile)}</div>
+        ${fullMobNum ? `<div class="dir-actions"><a href="tel:+${fullMobNum}" class="btn-action btn-call">📞 Call</a></div>` : ''}
+      </td>
+      <td>
+        <div>${esc(r.whatsapp_code||'')} ${esc(r.whatsapp||r.mobile)}</div>
+        ${fullWaNum ? `<div class="dir-actions"><a href="https://wa.me/${fullWaNum}" target="_blank" rel="noopener" class="btn-action btn-wa">💬 WhatsApp</a></div>` : ''}
+      </td>
       <td><span class="badge badge-blue">${esc(r.zone)}</span></td>
       <td>${esc(r.unit)}</td>
       <td><span class="badge ${lColor}">${esc(r.designation_level||'—')}</span></td>
       <td><span class="badge ${dColor}">${esc(r.designation||'—')}</span></td>
       <td><span class="badge ${r.marital_status==='Married'?'badge-green':'badge-grey'}">${esc(r.marital_status||'—')}</span></td>
       <td>${r.spouse_name ? `${esc(r.spouse_name)}${r.spouse_not_attending==='Yes'?' ❌':''}` : '—'}</td>
-      <td>${esc(r.spouse_mobile||'—')}</td>
+      <td>
+        ${esc(r.spouse_mobile||'—')}
+        ${r.spouse_mobile ? `<div class="dir-actions"><a href="tel:+${String(r.spouse_mobile).replace(/\D/g,'')}" class="btn-action btn-call">📞 Call</a></div>` : ''}
+      </td>
       <td style="min-width:160px;">${childPills || '—'}</td>
       <td>${lunchBadge}</td>
       <td>${donBadge}</td>
       <td style="white-space:nowrap;">${ts}</td>
     `;
     tbody.appendChild(tr);
+
+    // Mobile Delegate Card
+    if (cardsWrap) {
+      const card = document.createElement('div');
+      card.className = 'delegate-card';
+      card.innerHTML = `
+        <div class="dcard-top">
+          <div class="dcard-info">
+            <span class="dcard-num">#${i+1}</span>
+            <span class="dcard-name">${esc(r.name)}</span>
+          </div>
+          <div class="dcard-badges">
+            <span class="badge ${lColor}">${esc(r.designation_level||'—')}</span>
+            <span class="badge ${dColor}">${esc(r.designation||'—')}</span>
+          </div>
+        </div>
+
+        <div class="dcard-location">
+          <span>📍 <strong>${esc(r.zone)}</strong> Zone &bull; <strong>${esc(r.unit)}</strong> Unit</span>
+        </div>
+
+        <div class="dcard-actions">
+          ${fullMobNum ? `<a href="tel:+${fullMobNum}" class="dcard-btn btn-call">📞 Call ${esc(r.mobile)}</a>` : ''}
+          ${fullWaNum ? `<a href="https://wa.me/${fullWaNum}" target="_blank" rel="noopener" class="dcard-btn btn-wa">💬 WhatsApp</a>` : ''}
+        </div>
+
+        <div class="dcard-body">
+          <div class="dcard-row">
+            <span class="dcard-lbl">Status:</span>
+            <span class="badge ${r.marital_status==='Married'?'badge-green':'badge-grey'}">${esc(r.marital_status||'—')}</span>
+          </div>
+          ${r.spouse_name ? `
+          <div class="dcard-row">
+            <span class="dcard-lbl">Spouse:</span>
+            <span>${esc(r.spouse_name)} ${r.spouse_not_attending==='Yes'?'(❌ Not attending)':''}</span>
+          </div>` : ''}
+          ${childPills ? `
+          <div class="dcard-row" style="align-items:flex-start;">
+            <span class="dcard-lbl">Children:</span>
+            <div style="flex:1;">${childPills}</div>
+          </div>` : ''}
+          <div class="dcard-row-split">
+            <div><span class="dcard-lbl">Lunch:</span> ${lunchBadge}</div>
+            <div><span class="dcard-lbl">Donation:</span> ${donBadge}</div>
+          </div>
+        </div>
+      `;
+      cardsWrap.appendChild(card);
+    }
   });
 }
 

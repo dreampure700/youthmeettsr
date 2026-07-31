@@ -1791,3 +1791,172 @@ select option {
   .dlevel-btn { min-height: 48px; }
   select option { font-size: 15px; }
 }
+
+/* ══════════════════════════════════════════════════════
+   DIRECT CALL & WHATSAPP ACTION BUTTONS
+══════════════════════════════════════════════════════ */
+.dir-actions {
+  margin-top: 4px;
+  display: flex;
+  gap: 4px;
+}
+
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.btn-call {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+.btn-call:hover {
+  background: #bbf7d0;
+  color: #166534;
+  transform: translateY(-1px);
+}
+
+.btn-wa {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #6ee7b7;
+}
+
+.btn-wa:hover {
+  background: #a7f3d0;
+  color: #065f46;
+  transform: translateY(-1px);
+}
+
+/* ══════════════════════════════════════════════════════
+   MOBILE DELEGATE CARDS (Max-width 640px)
+══════════════════════════════════════════════════════ */
+.dir-cards-wrap {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .dir-table-wrap { display: none; }
+  .dir-cards-wrap { display: flex; }
+}
+
+.delegate-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.dcard-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.dcard-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dcard-num {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--blue);
+  background: var(--blue-light);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.dcard-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.dcard-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.dcard-location {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+/* Quick Action Call / WA buttons on Mobile Cards */
+.dcard-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.dcard-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: transform var(--transition), background var(--transition);
+  text-align: center;
+}
+
+.dcard-btn:active {
+  transform: scale(0.98);
+}
+
+.dcard-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12.5px;
+  background: #f8fafc;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+}
+
+.dcard-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dcard-row-split {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.dcard-lbl {
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
