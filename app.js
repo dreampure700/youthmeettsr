@@ -384,12 +384,18 @@ function collectFormData() {
 }
 
 async function submitToSheets(data) {
-  if (CONFIG.SHEET_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+  if (CONFIG.SHEET_URL.includes('YOUR_GOOGLE')) {
     await new Promise(r => setTimeout(r, 1200)); return;
   }
-  const fd = new FormData();
-  Object.entries(data).forEach(([k,v]) => fd.append(k,v));
-  await fetch(CONFIG.SHEET_URL, { method:'POST', body:fd, mode:'no-cors' });
+  const params = new URLSearchParams();
+  Object.entries(data).forEach(([k,v]) => params.append(k, String(v)));
+
+  await fetch(CONFIG.SHEET_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: params.toString(),
+    mode: 'no-cors'
+  });
 }
 
 // ─── OFFLINE / INDEXEDDB ──────────────────────────────
