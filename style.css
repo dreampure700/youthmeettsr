@@ -1401,6 +1401,9 @@ select option {
 .s-purple { background:#faf5ff; border-color:#e9d5ff; }
 .s-pink   { background:var(--pink-light); border-color:#fbcfe8; }
 .s-teal   { background:var(--teal-light); border-color:#99f6e4; }
+.s-gold   { background:#fefce8; border-color:#fef08a; }
+
+.s-gold   .stat-num { color: #ca8a04; }
 
 .stat-icon-sm { font-size: 20px; margin-bottom: 4px; }
 
@@ -1410,6 +1413,33 @@ select option {
   line-height: 1;
   margin-bottom: 4px;
 }
+
+/* ─── Currency Input Group ─── */
+.currency-input-group {
+  display: flex;
+  align-items: center;
+}
+
+.currency-prefix {
+  background: #f8fafc;
+  border: 1.5px solid var(--border);
+  border-right: none;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  padding: 12px 14px;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+.optional-tag {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.badge-gold { background: #fef9c3; color: #a16207; }
 
 .stat-lbl {
   font-size: 10px;

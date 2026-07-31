@@ -1,5 +1,5 @@
 /**
- * SUKOON REGISTRATION — Google Apps Script Backend
+ * SUKOON REGISTRATION — Google Apps Script Backend (v2)
  * Wisdom Youth Organisation, Thrissur District Committee
  *
  * HOW TO DEPLOY:
@@ -25,6 +25,8 @@ const HEADERS = [
   'Spouse Name', 'Spouse Mobile', 'Spouse Not Attending',
   'Children (JSON)',
   'Reason Not Coming',
+  'Willing To Donate',
+  'Donation Amount (₹)'
 ];
 
 // ─────────────────────────────────────────────────────────
@@ -64,6 +66,8 @@ function doPost(e) {
       p.spouse_not_attending || 'No',
       p.children    || '[]',
       p.reason_not_coming || '',
+      p.want_to_donate || 'No',
+      Number(p.donation_amount || 0),
     ];
 
     sheet.appendRow(row);
@@ -112,6 +116,8 @@ function doGet(e) {
         spouse_not_attending: String(r[13]),
         children:             String(r[14]),
         reason_not_coming:    String(r[15]),
+        want_to_donate:       String(r[16] || 'No'),
+        donation_amount:      Number(r[17] || 0),
       }));
       return jsonResponse({ rows });
     }
@@ -120,17 +126,24 @@ function doGet(e) {
     const total   = data.length;
     let married = 0, single = 0, spouseCount = 0;
     let childrenCount = 0, ageBelow5 = 0, age5to10 = 0, age11to18 = 0;
+    let totalDonation = 0;
     const zones = {}, units = {}, designations = {};
     let totalAttendees = 0;
 
     data.forEach(r => {
-      const marital = String(r[10]);
-      const zone    = String(r[6]);
-      const unit    = String(r[7]);
-      const desig   = String(r[9]);
-      const spouseNA = String(r[13]);
+      const marital  = String(r[10]);
+      const zone     = String(r[6]);
+      const unit     = String(r[7]);
+      const desig    = String(r[9]);
+      const spouseNA  = String(r[13]);
+      const donAmt   = parseFloat(r[17] || 0);
 
       if (marital === 'Married') { married++; } else { single++; }
+
+      // Total Donation sum
+      if (!isNaN(donAmt) && donAmt > 0) {
+        totalDonation += donAmt;
+      }
 
       // Zone count
       zones[zone] = (zones[zone] || 0) + 1;
@@ -174,6 +187,7 @@ function doGet(e) {
       total, married, single, totalAttendees,
       spouseCount, childrenCount,
       ageBelow5, age5to10, age11to18,
+      totalDonation,
       zones, units, designations,
     });
   } catch (err) {
@@ -184,6 +198,7 @@ function doGet(e) {
 function emptyStats() {
   return { total:0, married:0, single:0, totalAttendees:0,
            spouseCount:0, childrenCount:0, ageBelow5:0, age5to10:0, age11to18:0,
+           totalDonation:0,
            zones:{}, units:{}, designations:{} };
 }
 

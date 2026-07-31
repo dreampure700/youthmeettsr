@@ -304,6 +304,36 @@
 
       </div><!-- /card 2 -->
 
+      <!-- ══ CARD 3: Program Contribution ══ -->
+      <div class="form-card">
+        <div class="card-header">
+          <div class="card-icon" style="background:#dcfce7;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="26" height="26">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v12M15 9.5H10.5a2 2 0 000 4h3a2 2 0 010 4H9"/>
+            </svg>
+          </div>
+          <div>
+            <h2 class="card-title">Program Contribution <span class="optional-tag">(Optional)</span></h2>
+            <p class="card-subtitle">Support the Sukoon event organization</p>
+          </div>
+        </div>
+
+        <label class="checkbox-row donation-toggle-label" for="want_to_donate">
+          <input type="checkbox" id="want_to_donate" name="want_to_donate" />
+          <span class="donation-checkbox-text">Willing to contribute / donate to this program?</span>
+        </label>
+
+        <div id="donation-amount-group" class="field-group hidden" style="margin-top:16px;">
+          <label for="donation_amount" class="field-label">Donation Amount (₹) <span class="required-star">*</span></label>
+          <div class="currency-input-group">
+            <span class="currency-prefix">₹</span>
+            <input type="number" id="donation_amount" name="donation_amount" class="field-input phone-field" placeholder="Enter amount (e.g. 500)" min="1" step="1" />
+          </div>
+          <span class="field-error" id="err-donation"></span>
+        </div>
+      </div><!-- /card 3 -->
+
       <!-- ══ SUBMIT ══ -->
       <div class="submit-wrap">
         <button type="submit" id="submit-btn" class="btn btn-submit">
@@ -408,6 +438,11 @@
               <div class="stat-num" id="stat-children">—</div>
               <div class="stat-lbl">Total Children</div>
             </div>
+            <div class="stat-card s-gold">
+              <div class="stat-icon-sm">🪙</div>
+              <div class="stat-num" id="stat-donation">—</div>
+              <div class="stat-lbl">Total Donation Offered</div>
+            </div>
           </div>
 
           <!-- Children Age Groups -->
@@ -508,11 +543,12 @@
                   <th>Spouse</th>
                   <th>Spouse Mobile</th>
                   <th>Children</th>
+                  <th>Donation (₹)</th>
                   <th>Registered</th>
                 </tr>
               </thead>
               <tbody id="dir-tbody">
-                <tr><td colspan="13" class="dir-empty">Loading data...</td></tr>
+                <tr><td colspan="14" class="dir-empty">Loading data...</td></tr>
               </tbody>
             </table>
           </div>
