@@ -118,16 +118,40 @@ function initPhoneMirror() {
 
 // ─── DESIGNATION LEVEL TABS ───────────────────────────
 function initDesignationLevel() {
+  const desigSelect = $('designation');
+
   $$('.dlevel-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       $$('.dlevel-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      $('desig_level').value = btn.dataset.level;
+      const level = btn.dataset.level;
+      $('desig_level').value = level;
       clearError('err-desig-level', null);
+
+      // Filter Designation options: Member is ONLY available for Unit level
+      const currentVal = desigSelect.value;
+      desigSelect.innerHTML = '<option value="">— Select Designation —</option>';
+      const roles = ['President', 'Vice President', 'Secretary', 'Joint Secretary', 'Treasurer'];
+      if (level === 'Unit') {
+        roles.push('Member');
+      }
+
+      roles.forEach(role => {
+        const opt = document.createElement('option');
+        opt.value = opt.textContent = role;
+        desigSelect.appendChild(opt);
+      });
+
+      if (roles.includes(currentVal)) {
+        desigSelect.value = currentVal;
+      } else {
+        desigSelect.value = '';
+      }
+      clearError('err-designation', desigSelect);
     });
   });
 
-  $('designation').addEventListener('change', function () {
+  desigSelect.addEventListener('change', function () {
     clearError('err-designation', this);
   });
 }
