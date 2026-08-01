@@ -388,14 +388,30 @@ async function submitToSheets(data) {
     await new Promise(r => setTimeout(r, 1200)); return;
   }
   const params = new URLSearchParams();
-  Object.entries(data).forEach(([k,v]) => params.append(k, String(v)));
+  params.append('action', 'submit');
+  Object.entries(data).forEach(([k, v]) => params.append(k, String(v)));
 
-  await fetch(CONFIG.SHEET_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: params.toString(),
-    mode: 'no-cors'
-  });
+  // Send via POST
+  try {
+    await fetch(CONFIG.SHEET_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+      mode: 'no-cors'
+    });
+  } catch (e) {
+    console.warn('POST submit attempt:', e);
+  }
+
+  // Also send via GET fallback (ensures Apps Script redirect receives query string parameters)
+  try {
+    await fetch(`${CONFIG.SHEET_URL}?${params.toString()}`, {
+      method: 'GET',
+      mode: 'no-cors'
+    });
+  } catch (e) {
+    console.warn('GET submit fallback:', e);
+  }
 }
 
 // ─── OFFLINE / INDEXEDDB ──────────────────────────────

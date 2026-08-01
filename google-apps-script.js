@@ -1,5 +1,5 @@
 /**
- * SUKOON REGISTRATION — Google Apps Script Backend (v4)
+ * SUKOON REGISTRATION — Google Apps Script Backend (v5 Dual Mode)
  * Wisdom Youth Organisation, Thrissur District Committee
  */
 
@@ -22,65 +22,76 @@ const HEADERS = [
 ];
 
 // ─────────────────────────────────────────────────────────
-//  POST — Save a registration
+//  Helper — Save a registration row
+// ─────────────────────────────────────────────────────────
+function saveRegistration(p) {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+  let sheet = ss.getSheetByName('Registrations');
+  if (!sheet) {
+    sheet = ss.insertSheet('Registrations');
+    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+    sheet.setFrozenRows(1);
+    // Style header row
+    const hRange = sheet.getRange(1, 1, 1, HEADERS.length);
+    hRange.setBackground('#0077b6');
+    hRange.setFontColor('#ffffff');
+    hRange.setFontWeight('bold');
+  }
+
+  const row = [
+    new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+    p.name        || '',
+    p.mobile_code || '+91',
+    p.mobile      || '',
+    p.whatsapp_code || '+91',
+    p.whatsapp    || '',
+    p.zone        || '',
+    p.unit        || '',
+    p.designation_level || '',
+    p.designation || '',
+    p.marital_status || '',
+    p.spouse_name || '',
+    p.spouse_mobile || '',
+    p.spouse_not_attending || 'No',
+    p.children    || '[]',
+    p.reason_not_coming || '',
+    p.need_lunch  || 'No',
+    p.want_to_donate || 'No',
+    Number(p.donation_amount || 0),
+  ];
+
+  sheet.appendRow(row);
+  return { success: true };
+}
+
+// ─────────────────────────────────────────────────────────
+//  POST — Save a registration via POST
 // ─────────────────────────────────────────────────────────
 function doPost(e) {
   try {
-    const p = e.parameter;
-    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-
-    let sheet = ss.getSheetByName('Registrations');
-    if (!sheet) {
-      sheet = ss.insertSheet('Registrations');
-      sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
-      sheet.setFrozenRows(1);
-      // Style header row
-      const hRange = sheet.getRange(1, 1, 1, HEADERS.length);
-      hRange.setBackground('#0077b6');
-      hRange.setFontColor('#ffffff');
-      hRange.setFontWeight('bold');
-    }
-
-    const row = [
-      new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
-      p.name        || '',
-      p.mobile_code || '+91',
-      p.mobile      || '',
-      p.whatsapp_code || '+91',
-      p.whatsapp    || '',
-      p.zone        || '',
-      p.unit        || '',
-      p.designation_level || '',
-      p.designation || '',
-      p.marital_status || '',
-      p.spouse_name || '',
-      p.spouse_mobile || '',
-      p.spouse_not_attending || 'No',
-      p.children    || '[]',
-      p.reason_not_coming || '',
-      p.need_lunch  || 'No',
-      p.want_to_donate || 'No',
-      Number(p.donation_amount || 0),
-    ];
-
-    sheet.appendRow(row);
-
-    return ContentService
-      .createTextOutput(JSON.stringify({ success: true }))
-      .setMimeType(ContentService.MimeType.JSON);
+    const p = e.parameter || {};
+    const res = saveRegistration(p);
+    return jsonResponse(res);
   } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ success: false, error: err.message }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ success: false, error: err.message });
   }
 }
 
 // ─────────────────────────────────────────────────────────
-//  GET — Return stats or all rows
+//  GET — Return stats, all rows, OR save registration via GET
 // ─────────────────────────────────────────────────────────
 function doGet(e) {
-  const action = (e && e.parameter && e.parameter.action) || 'stats';
+  const p = (e && e.parameter) || {};
+  const action = p.action || 'stats';
+
   try {
+    // If action is submit or name is present, save registration!
+    if (action === 'submit' || p.name) {
+      const res = saveRegistration(p);
+      return jsonResponse(res);
+    }
+
     const ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = ss.getSheetByName('Registrations');
 
@@ -137,14 +148,12 @@ function doGet(e) {
       if (lunch === 'Yes') { lunchCount++; }
       if (!isNaN(donAmt) && donAmt > 0) { totalDonation += donAmt; }
 
-      // Spouse count for this row
       let personSpouse = 0;
       if (marital === 'Married' && spouseNA !== 'Yes') {
         spouseCount++;
         personSpouse = 1;
       }
 
-      // Children count for this row
       let personChildren = 0;
       try {
         const children = JSON.parse(String(r[14]) || '[]');
@@ -164,29 +173,22 @@ function doGet(e) {
       const personTotal = 1 + personSpouse + personChildren;
       totalAttendees += personTotal;
 
-      // Zone Breakdown Object (Youth, Spouses, Children, Total)
       if (zone) {
-        if (!zones[zone]) {
-          zones[zone] = { youth: 0, spouses: 0, children: 0, total: 0 };
-        }
+        if (!zones[zone]) { zones[zone] = { youth: 0, spouses: 0, children: 0, total: 0 }; }
         zones[zone].youth += 1;
         zones[zone].spouses += personSpouse;
         zones[zone].children += personChildren;
         zones[zone].total += personTotal;
       }
 
-      // Unit Breakdown Object (Youth, Spouses, Children, Total)
       if (unit) {
-        if (!units[unit]) {
-          units[unit] = { youth: 0, spouses: 0, children: 0, total: 0 };
-        }
+        if (!units[unit]) { units[unit] = { youth: 0, spouses: 0, children: 0, total: 0 }; }
         units[unit].youth += 1;
         units[unit].spouses += personSpouse;
         units[unit].children += personChildren;
         units[unit].total += personTotal;
       }
 
-      // Designation count
       if (desig) designations[desig] = (designations[desig] || 0) + 1;
     });
 
