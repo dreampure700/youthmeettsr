@@ -502,7 +502,13 @@ function initAdminPanel() {
 
   // Directory filters
   $('dir-search').addEventListener('input', filterDirectory);
-  $('dir-filter-zone').addEventListener('change', filterDirectory);
+  $('dir-filter-zone').addEventListener('change', () => {
+    updateDirectoryUnitFilter();
+    filterDirectory();
+  });
+  if ($('dir-filter-unit')) {
+    $('dir-filter-unit').addEventListener('change', filterDirectory);
+  }
   $('dir-filter-desig').addEventListener('change', filterDirectory);
 }
 
@@ -710,6 +716,7 @@ async function fetchDirectory() {
   if (CONFIG.SHEET_URL.includes('YOUR_GOOGLE')) {
     await new Promise(r => setTimeout(r, 500));
     allRegistrations = buildDemoRegistrations();
+    updateDirectoryUnitFilter();
     renderDirectory(allRegistrations);
     return;
   }
@@ -717,6 +724,7 @@ async function fetchDirectory() {
     const res  = await fetch(`${CONFIG.SHEET_URL}?action=all`);
     const json = await res.json();
     allRegistrations = json.rows || [];
+    updateDirectoryUnitFilter();
     renderDirectory(allRegistrations);
   } catch { $('dir-tbody').innerHTML = '<tr><td colspan="15" class="dir-empty">Failed to load data.</td></tr>'; }
 }
@@ -890,16 +898,41 @@ function renderDirectory(rows) {
   });
 }
 
+function updateDirectoryUnitFilter() {
+  const unitSelect = $('dir-filter-unit');
+  if (!unitSelect) return;
+  const currentUnit = unitSelect.value;
+  const selectedZone = $('dir-filter-zone').value;
+
+  let unitsList = [];
+  if (selectedZone && ZONE_UNITS[selectedZone]) {
+    unitsList = ZONE_UNITS[selectedZone];
+  } else {
+    const unitSet = new Set();
+    Object.values(ZONE_UNITS).forEach(arr => arr.forEach(u => unitSet.add(u)));
+    allRegistrations.forEach(r => { if (r.unit) unitSet.add(r.unit); });
+    unitsList = Array.from(unitSet).sort();
+  }
+
+  unitSelect.innerHTML = '<option value="">All Units</option>' + 
+    unitsList.map(u => `<option value="${esc(u)}">${esc(u)}</option>`).join('');
+  if (unitsList.includes(currentUnit)) {
+    unitSelect.value = currentUnit;
+  }
+}
+
 function filterDirectory() {
-  const q    = $('dir-search').value.toLowerCase().trim();
-  const zone = $('dir-filter-zone').value;
-  const desig= $('dir-filter-desig').value;
+  const q     = $('dir-search').value.toLowerCase().trim();
+  const zone  = $('dir-filter-zone').value;
+  const unit  = $('dir-filter-unit') ? $('dir-filter-unit').value : '';
+  const desig = $('dir-filter-desig').value;
 
   const filtered = allRegistrations.filter(r => {
     const matchQ    = !q || `${r.name} ${r.mobile} ${r.zone} ${r.unit} ${r.designation}`.toLowerCase().includes(q);
-    const matchZone = !zone  || r.zone === zone;
+    const matchZone = !zone || r.zone === zone;
+    const matchUnit = !unit || r.unit === unit;
     const matchDesig= !desig || r.designation === desig;
-    return matchQ && matchZone && matchDesig;
+    return matchQ && matchZone && matchUnit && matchDesig;
   });
 
   renderDirectory(filtered);

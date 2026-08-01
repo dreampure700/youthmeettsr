@@ -1587,7 +1587,7 @@ select option {
 /* ─── Delegate Directory ─── */
 .dir-filters {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr auto auto auto;
   gap: 10px;
   margin-bottom: 14px;
 }
