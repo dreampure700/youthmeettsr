@@ -646,15 +646,27 @@ function renderZoneUnitTree(zonesObj, unitsObj) {
   }
 
   allZoneNames.forEach(zoneName => {
-    const zData = zonesObj[zoneName] || { youth: 0, spouses: 0, children: 0, total: 0 };
-    const zYouth = typeof zData === 'object' ? (zData.youth || 0) : zData;
-    const zSpouses = typeof zData === 'object' ? (zData.spouses || 0) : 0;
-    const zChildren = typeof zData === 'object' ? (zData.children || 0) : 0;
-    const zTotal = typeof zData === 'object' ? (zData.total || zYouth) : zYouth;
-
     const zoneUnitsList = ZONE_UNITS[zoneName] || [];
 
-    // Zone Row
+    // Calculate aggregated unit totals for this Zone
+    let calcYouth = 0, calcSpouses = 0, calcChildren = 0, calcTotal = 0;
+    zoneUnitsList.forEach(uName => {
+      const uD = unitsObj[uName];
+      if (uD && typeof uD === 'object') {
+        calcYouth += (uD.youth || 0);
+        calcSpouses += (uD.spouses || 0);
+        calcChildren += (uD.children || 0);
+        calcTotal += (uD.total || 0);
+      }
+    });
+
+    const zData = zonesObj[zoneName] || {};
+    const zYouth = (typeof zData === 'object' && zData.youth) ? zData.youth : Math.max(calcYouth, typeof zData === 'number' ? zData : 0);
+    const zSpouses = (typeof zData === 'object' && zData.spouses) ? zData.spouses : calcSpouses;
+    const zChildren = (typeof zData === 'object' && zData.children) ? zData.children : calcChildren;
+    const zTotal = (typeof zData === 'object' && zData.total) ? zData.total : Math.max(calcTotal, zYouth + zSpouses + zChildren);
+
+    // Zone Row (Top level header row)
     const zTr = document.createElement('tr');
     zTr.className = 'tree-row zone-row-tree';
     zTr.dataset.zone = zoneName;
@@ -672,13 +684,13 @@ function renderZoneUnitTree(zonesObj, unitsObj) {
     `;
     tbody.appendChild(zTr);
 
-    // Units under this Zone
+    // Unit Rows (Collapsed by default, shown when arrow down / row clicked)
     zoneUnitsList.forEach(unitName => {
       const uData = unitsObj[unitName] || { youth: 0, spouses: 0, children: 0, total: 0 };
-      const uYouth = typeof uData === 'object' ? (uData.youth || 0) : uData;
+      const uYouth = typeof uData === 'object' ? (uData.youth || 0) : (typeof uData === 'number' ? uData : 0);
       const uSpouses = typeof uData === 'object' ? (uData.spouses || 0) : 0;
       const uChildren = typeof uData === 'object' ? (uData.children || 0) : 0;
-      const uTotal = typeof uData === 'object' ? (uData.total || uYouth) : uYouth;
+      const uTotal = typeof uData === 'object' ? (uData.total || (uYouth + uSpouses + uChildren)) : uYouth;
 
       const uTr = document.createElement('tr');
       uTr.className = 'tree-row unit-row-tree hidden';
@@ -698,7 +710,7 @@ function renderZoneUnitTree(zonesObj, unitsObj) {
       tbody.appendChild(uTr);
     });
 
-    // Expand/Collapse Toggle on Zone click
+    // Toggle expand/collapse when clicking the Zone row or arrow
     zTr.addEventListener('click', () => {
       const isExpanded = zTr.classList.toggle('expanded');
       const toggleBtn = zTr.querySelector('.tree-toggle-btn');
