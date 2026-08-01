@@ -1,11 +1,10 @@
 /**
- * SUKOON REGISTRATION — Google Apps Script Backend (v5 Dual Mode)
+ * SUKOON REGISTRATION — Google Apps Script Backend (v6 Meal Multiplier)
  * Wisdom Youth Organisation, Thrissur District Committee
  */
 
 const SPREADSHEET_ID = '19RhyFN5f43Z2cDlWRf0--93EecH2-L349Qm1gGfY_0A';
 
-// Column headers for the Registrations sheet
 const HEADERS = [
   'Timestamp', 'Name',
   'Mobile Code', 'Mobile',
@@ -21,9 +20,6 @@ const HEADERS = [
   'Donation Amount (₹)'
 ];
 
-// ─────────────────────────────────────────────────────────
-//  Helper — Save a registration row
-// ─────────────────────────────────────────────────────────
 function saveRegistration(p) {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
 
@@ -32,7 +28,6 @@ function saveRegistration(p) {
     sheet = ss.insertSheet('Registrations');
     sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
     sheet.setFrozenRows(1);
-    // Style header row
     const hRange = sheet.getRange(1, 1, 1, HEADERS.length);
     hRange.setBackground('#0077b6');
     hRange.setFontColor('#ffffff');
@@ -65,12 +60,9 @@ function saveRegistration(p) {
   return { success: true };
 }
 
-// ─────────────────────────────────────────────────────────
-//  POST — Save a registration via POST
-// ─────────────────────────────────────────────────────────
 function doPost(e) {
   try {
-    const p = e.parameter || {};
+    const p = (e && e.parameter) || {};
     const res = saveRegistration(p);
     return jsonResponse(res);
   } catch (err) {
@@ -78,15 +70,11 @@ function doPost(e) {
   }
 }
 
-// ─────────────────────────────────────────────────────────
-//  GET — Return stats, all rows, OR save registration via GET
-// ─────────────────────────────────────────────────────────
 function doGet(e) {
   const p = (e && e.parameter) || {};
   const action = p.action || 'stats';
 
   try {
-    // If action is submit or name is present, save registration!
     if (action === 'submit' || p.name) {
       const res = saveRegistration(p);
       return jsonResponse(res);
@@ -127,8 +115,7 @@ function doGet(e) {
       return jsonResponse({ rows });
     }
 
-    // Build detailed stats
-    const total   = data.length;
+    const total = data.length;
     let married = 0, single = 0, spouseCount = 0;
     let childrenCount = 0, ageBelow5 = 0, age5to10 = 0, age11to18 = 0;
     let lunchCount = 0, totalDonation = 0;
@@ -145,7 +132,6 @@ function doGet(e) {
       const donAmt   = parseFloat(r[18] || 0);
 
       if (marital === 'Married') { married++; } else { single++; }
-      if (lunch === 'Yes') { lunchCount++; }
       if (!isNaN(donAmt) && donAmt > 0) { totalDonation += donAmt; }
 
       let personSpouse = 0;
@@ -172,6 +158,11 @@ function doGet(e) {
 
       const personTotal = 1 + personSpouse + personChildren;
       totalAttendees += personTotal;
+
+      // If lunch is requested, add personTotal meals for this family!
+      if (lunch === 'Yes') {
+        lunchCount += personTotal;
+      }
 
       if (zone) {
         if (!zones[zone]) { zones[zone] = { youth: 0, spouses: 0, children: 0, total: 0 }; }

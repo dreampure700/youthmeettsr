@@ -787,9 +787,16 @@ function renderDirectory(rows) {
     const dColor = DESIGNATION_COLORS[r.designation] || 'badge-grey';
     const lColor = r.designation_level === 'District' ? 'badge-purple' : r.designation_level === 'Zone' ? 'badge-blue' : 'badge-green';
 
+    // Calculate exact family meals count
+    const isSpouseAttending = (r.marital_status === 'Married' && r.spouse_not_attending !== 'Yes');
+    const attendingChildrenCount = children.filter(c => !c.not_attending).length;
+    const familyMealCount = 1 + (isSpouseAttending ? 1 : 0) + attendingChildrenCount;
+
     const donAmt = parseFloat(r.donation_amount || 0);
     const donBadge = donAmt > 0 ? `<span class="badge badge-gold">₹${donAmt.toLocaleString('en-IN')}</span>` : '—';
-    const lunchBadge = r.need_lunch === 'Yes' ? `<span class="badge badge-orange">Yes</span>` : `<span class="badge badge-grey">No</span>`;
+    const lunchBadge = r.need_lunch === 'Yes'
+      ? `<span class="badge badge-orange">🍱 ${familyMealCount} Meal${familyMealCount !== 1 ? 's' : ''}</span>`
+      : `<span class="badge badge-grey">No</span>`;
 
     const ts = r.timestamp ? new Date(r.timestamp).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
 
@@ -911,12 +918,18 @@ function exportCSV() {
     let children = [];
     try { children = JSON.parse(r.children || '[]'); } catch {}
     const childStr = children.map(c => `${c.name}(${c.age}y,${c.sex}${c.not_attending?',NA':''})`).join('; ');
+
+    const isSpouseAttending = (r.marital_status === 'Married' && r.spouse_not_attending !== 'Yes');
+    const attendingChildrenCount = children.filter(c => !c.not_attending).length;
+    const familyMealCount = 1 + (isSpouseAttending ? 1 : 0) + attendingChildrenCount;
+    const lunchStr = r.need_lunch === 'Yes' ? `Yes (${familyMealCount} meal${familyMealCount !== 1 ? 's' : ''})` : 'No';
+
     return [
       i+1, r.name, (r.mobile_code||'+91')+r.mobile, (r.whatsapp_code||'+91')+(r.whatsapp||r.mobile),
       r.zone, r.unit, r.designation_level, r.designation, r.marital_status,
       r.spouse_name||'', r.spouse_mobile||'', r.spouse_not_attending||'No',
       childStr, r.reason_not_coming||'',
-      r.need_lunch||'No', r.want_to_donate||'No', r.donation_amount||0, r.timestamp||''
+      lunchStr, r.want_to_donate||'No', r.donation_amount||0, r.timestamp||''
     ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
   });
 
