@@ -625,11 +625,92 @@ function renderStats(d) {
     animCountFormatted('stat-donation', d.totalDonation || 0, '₹');
   }
 
+  renderZoneUnitTree(d.zones || {}, d.units || {});
   renderBarList('zone-stats-list',  d.zones       || {}, 'Zone');
   renderBarList('unit-stats-list',  d.units       || {}, 'Unit');
   renderBarList('desig-stats-list', d.designations|| {}, '');
 
   $('last-updated').textContent = 'Last updated: ' + new Date().toLocaleTimeString('en-IN');
+}
+
+function renderZoneUnitTree(zonesObj, unitsObj) {
+  const tbody = $('zone-unit-tree-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  const allZoneNames = Array.from(new Set([...Object.keys(ZONE_UNITS), ...Object.keys(zonesObj)]));
+
+  if (!allZoneNames.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:16px;color:var(--text-muted);">No Zone data available.</td></tr>';
+    return;
+  }
+
+  allZoneNames.forEach(zoneName => {
+    const zData = zonesObj[zoneName] || { youth: 0, spouses: 0, children: 0, total: 0 };
+    const zYouth = typeof zData === 'object' ? (zData.youth || 0) : zData;
+    const zSpouses = typeof zData === 'object' ? (zData.spouses || 0) : 0;
+    const zChildren = typeof zData === 'object' ? (zData.children || 0) : 0;
+    const zTotal = typeof zData === 'object' ? (zData.total || zYouth) : zYouth;
+
+    const zoneUnitsList = ZONE_UNITS[zoneName] || [];
+
+    // Zone Row
+    const zTr = document.createElement('tr');
+    zTr.className = 'tree-row zone-row-tree';
+    zTr.dataset.zone = zoneName;
+    zTr.innerHTML = `
+      <td class="tree-cell-name">
+        <button class="tree-toggle-btn" aria-label="Toggle ${esc(zoneName)} Units">❯</button>
+        <strong class="zone-tree-title">Zone: ${esc(zoneName)}</strong>
+      </td>
+      <td><span class="badge badge-zone">ZONE</span></td>
+      <td><strong class="tree-num">${zYouth}</strong></td>
+      <td>${zYouth}</td>
+      <td>${zSpouses}</td>
+      <td>${zChildren}</td>
+      <td><span class="badge badge-blue">${zTotal}</span></td>
+    `;
+    tbody.appendChild(zTr);
+
+    // Units under this Zone
+    zoneUnitsList.forEach(unitName => {
+      const uData = unitsObj[unitName] || { youth: 0, spouses: 0, children: 0, total: 0 };
+      const uYouth = typeof uData === 'object' ? (uData.youth || 0) : uData;
+      const uSpouses = typeof uData === 'object' ? (uData.spouses || 0) : 0;
+      const uChildren = typeof uData === 'object' ? (uData.children || 0) : 0;
+      const uTotal = typeof uData === 'object' ? (uData.total || uYouth) : uYouth;
+
+      const uTr = document.createElement('tr');
+      uTr.className = 'tree-row unit-row-tree hidden';
+      uTr.dataset.parentZone = zoneName;
+      uTr.innerHTML = `
+        <td class="tree-cell-name unit-indent">
+          <span class="tree-arrow-indent">↳</span>
+          <span>Unit: ${esc(unitName)}</span>
+        </td>
+        <td><span class="badge badge-unit">UNIT</span></td>
+        <td><strong>${uYouth}</strong></td>
+        <td>${uYouth}</td>
+        <td>${uSpouses}</td>
+        <td>${uChildren}</td>
+        <td><span class="badge badge-teal">${uTotal}</span></td>
+      `;
+      tbody.appendChild(uTr);
+    });
+
+    // Expand/Collapse Toggle on Zone click
+    zTr.addEventListener('click', () => {
+      const isExpanded = zTr.classList.toggle('expanded');
+      const toggleBtn = zTr.querySelector('.tree-toggle-btn');
+      if (toggleBtn) toggleBtn.textContent = isExpanded ? '▼' : '❯';
+
+      const childUnitRows = tbody.querySelectorAll(`tr.unit-row-tree[data-parent-zone="${CSS.escape(zoneName)}"]`);
+      childUnitRows.forEach(row => {
+        if (isExpanded) row.classList.remove('hidden');
+        else row.classList.add('hidden');
+      });
+    });
+  });
 }
 
 function renderBarList(containerId, obj, suffix) {
