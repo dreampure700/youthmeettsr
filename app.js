@@ -816,10 +816,14 @@ async function fetchDirectory() {
   try {
     const res  = await fetch(`${CONFIG.SHEET_URL}?action=all`);
     const json = await res.json();
-    allRegistrations = json.rows || [];
+    allRegistrations = (json && json.rows) ? json.rows : [];
     updateDirectoryUnitFilter();
     renderDirectory(allRegistrations);
-  } catch { $('dir-tbody').innerHTML = '<tr><td colspan="15" class="dir-empty">Failed to load data.</td></tr>'; }
+  } catch (err) {
+    console.warn('Directory fetch notice:', err);
+    allRegistrations = [];
+    renderDirectory([]);
+  }
 }
 
 function buildDemoRegistrations() {
