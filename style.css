@@ -44,8 +44,8 @@
   --radius-xl:   20px;
   --radius-full: 999px;
 
-  --font:        'Outfit', system-ui, -apple-system, sans-serif;
-  --font-ml:     'Noto Sans Malayalam', sans-serif;
+  --font:        'Outfit', 'Anek Malayalam', system-ui, -apple-system, sans-serif;
+  --font-ml:     'Anek Malayalam', sans-serif;
 
   --transition:  0.2s ease;
 }
@@ -61,6 +61,11 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+}
+
+/* ─── Malayalam Typography ─── */
+.malayalam-note, .malayalam-label, [lang="ml"] {
+  font-family: var(--font-ml);
 }
 
 /* ─── HEADER ─── */
