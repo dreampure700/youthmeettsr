@@ -1,7 +1,7 @@
 {
-  "name": "Sukoon - Youth Leader's Family Meet",
+  "name": "Sukoon - Youth Family Leaders Meet",
   "short_name": "Sukoon",
-  "description": "Registration for Sukoon Youth Leader's Family Meet by Wisdom Youth Organisation, Thrissur District Committee",
+  "description": "Registration for Sukoon Youth Family Leaders Meet by Wisdom Youth Organisation, Thrissur District Committee",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0077b6",
